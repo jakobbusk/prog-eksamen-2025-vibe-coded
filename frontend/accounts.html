@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Accounts — Portfolio Manager</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a class="navbar-brand" href="/dashboard.html">📈 Portfolio Manager</a>
+    <ul class="navbar-nav">
+      <li><a href="/dashboard.html">Dashboard</a></li>
+      <li><a href="/accounts.html" class="active">Accounts</a></li>
+      <li><a href="/portfolio.html">Portfolios</a></li>
+      <li><a href="/trades.html">Trades</a></li>
+    </ul>
+    <div class="navbar-actions">
+      <span class="text-muted" style="font-size:0.85rem">👤 <span id="nav-username"></span></span>
+      <button id="logout-btn" class="btn btn-ghost btn-sm">Logout</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header d-flex justify-between align-center">
+      <div>
+        <h1>Accounts</h1>
+        <p>Manage your investment accounts</p>
+      </div>
+      <button class="btn btn-primary" onclick="openModal('create-account-modal')">+ New Account</button>
+    </div>
+
+    <div id="accounts-error"></div>
+
+    <div id="accounts-grid" class="grid grid-3">
+      <div class="loading-overlay" style="grid-column:1/-1"><div class="spinner"></div> Loading…</div>
+    </div>
+  </div>
+
+  <!-- Create Account Modal -->
+  <div class="modal-overlay" id="create-account-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>New Account</h2>
+        <button class="modal-close" onclick="closeModal('create-account-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="create-account-error"></div>
+        <form id="create-account-form">
+          <div class="form-group">
+            <label for="account-name">Account Name *</label>
+            <input type="text" id="account-name" placeholder="e.g. Nordea Investment" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="account-bank">Bank</label>
+              <select id="account-bank">
+                <option value="">Loading…</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="account-currency">Currency</label>
+              <select id="account-currency">
+                <option value="DKK">DKK</option>
+                <option value="USD">USD</option>
+                <option value="EUR">EUR</option>
+                <option value="SEK">SEK</option>
+                <option value="NOK">NOK</option>
+              </select>
+            </div>
+          </div>
+          <div class="modal-footer" style="padding:0;border:none;margin-top:8px">
+            <button type="button" class="btn btn-ghost" onclick="closeModal('create-account-modal')">Cancel</button>
+            <button type="submit" class="btn btn-primary">Create Account</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Deposit Modal -->
+  <div class="modal-overlay" id="deposit-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Deposit — <span id="deposit-account-name"></span></h2>
+        <button class="modal-close" onclick="closeModal('deposit-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="deposit-error"></div>
+        <form id="deposit-form">
+          <div class="form-group">
+            <label for="deposit-amount">Amount *</label>
+            <input type="number" id="deposit-amount" min="0.01" step="0.01" placeholder="0.00" required>
+          </div>
+          <div class="form-group">
+            <label for="deposit-description">Description</label>
+            <input type="text" id="deposit-description" placeholder="Optional note">
+          </div>
+          <div class="modal-footer" style="padding:0;border:none;margin-top:8px">
+            <button type="button" class="btn btn-ghost" onclick="closeModal('deposit-modal')">Cancel</button>
+            <button type="submit" class="btn btn-success">Deposit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Withdraw Modal -->
+  <div class="modal-overlay" id="withdraw-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>Withdraw — <span id="withdraw-account-name"></span></h2>
+        <button class="modal-close" onclick="closeModal('withdraw-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="withdraw-error"></div>
+        <form id="withdraw-form">
+          <div class="form-group">
+            <label for="withdraw-amount">Amount *</label>
+            <input type="number" id="withdraw-amount" min="0.01" step="0.01" placeholder="0.00" required>
+          </div>
+          <div class="form-group">
+            <label for="withdraw-description">Description</label>
+            <input type="text" id="withdraw-description" placeholder="Optional note">
+          </div>
+          <div class="modal-footer" style="padding:0;border:none;margin-top:8px">
+            <button type="button" class="btn btn-ghost" onclick="closeModal('withdraw-modal')">Cancel</button>
+            <button type="submit" class="btn btn-danger">Withdraw</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transactions Modal -->
+  <div class="modal-overlay" id="transactions-modal">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <h2>Transactions — <span id="tx-account-name"></span></h2>
+        <button class="modal-close" onclick="closeModal('transactions-modal')">&times;</button>
+      </div>
+      <div class="modal-body" style="padding:0">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th class="text-right">Amount</th>
+                <th class="text-right">Balance After</th>
+              </tr>
+            </thead>
+            <tbody id="tx-body">
+              <tr><td colspan="5" class="text-center text-muted" style="padding:24px">Loading…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/accounts.js"></script>
+</body>
+</html>

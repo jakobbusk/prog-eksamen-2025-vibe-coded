@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trades — Portfolio Manager</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a class="navbar-brand" href="/dashboard.html">📈 Portfolio Manager</a>
+    <ul class="navbar-nav">
+      <li><a href="/dashboard.html">Dashboard</a></li>
+      <li><a href="/accounts.html">Accounts</a></li>
+      <li><a href="/portfolio.html">Portfolios</a></li>
+      <li><a href="/trades.html" class="active">Trades</a></li>
+    </ul>
+    <div class="navbar-actions">
+      <span class="text-muted" style="font-size:0.85rem">👤 <span id="nav-username"></span></span>
+      <button id="logout-btn" class="btn btn-ghost btn-sm">Logout</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header">
+      <h1>Trades</h1>
+      <p>Execute and view your investment trades</p>
+    </div>
+
+    <div id="trades-error"></div>
+
+    <div class="grid grid-2" style="align-items:start">
+      <!-- Trade Entry Form -->
+      <div class="card">
+        <div class="card-header">
+          <h2>New Trade</h2>
+        </div>
+        <div class="card-body">
+          <div id="trade-error"></div>
+          <form id="trade-form">
+            <div class="form-group">
+              <label for="portfolio-select">Portfolio *</label>
+              <select id="portfolio-select" required>
+                <option value="">Loading portfolios…</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="security-search">Security *</label>
+              <div class="search-wrapper">
+                <input type="text" id="security-search" placeholder="Search by ticker or name…" autocomplete="off">
+                <div id="search-results" class="search-results hidden"></div>
+              </div>
+              <div id="selected-security" class="badge badge-primary mt-1 hidden"></div>
+              <div class="form-hint">Type at least 2 characters to search</div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="trade-type">Trade Type *</label>
+                <select id="trade-type" required>
+                  <option value="buy">Buy</option>
+                  <option value="sell">Sell</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="trade-quantity">Quantity *</label>
+                <input type="number" id="trade-quantity" min="0.000001" step="0.000001" placeholder="0" required>
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group">
+                <label for="trade-price">Price per Unit *</label>
+                <input type="number" id="trade-price" min="0.0001" step="0.0001" placeholder="0.00" required>
+              </div>
+              <div class="form-group">
+                <label for="trade-fee">Fee</label>
+                <input type="number" id="trade-fee" min="0" step="0.01" value="0" placeholder="0.00">
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="trade-total">Total Price (auto-calculated)</label>
+              <input type="number" id="trade-total" min="0.0001" step="0.0001" placeholder="0.00" required>
+              <div class="form-hint">Qty × Price per unit. You can also enter manually.</div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 btn-lg">Execute Trade</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Trades Table -->
+      <div class="card">
+        <div class="card-header">
+          <h2>Trade History</h2>
+          <button class="btn btn-sm btn-ghost" onclick="loadTrades()">↻ Refresh</button>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Type</th>
+                <th>Security</th>
+                <th class="text-right">Qty</th>
+                <th class="text-right">Avg Price</th>
+                <th class="text-right">Total</th>
+                <th class="text-right">Fee</th>
+              </tr>
+            </thead>
+            <tbody id="trades-table-body">
+              <tr><td colspan="7" class="text-center text-muted" style="padding:24px">Select a portfolio to view trades</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/api.js"></script>
+  <script src="/js/trades.js"></script>
+</body>
+</html>
