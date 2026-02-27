@@ -13,15 +13,20 @@ async function findByPortfolioId(portfolioId) {
 }
 
 async function findByPortfolioIds(portfolioIds) {
-  if (!portfolioIds || portfolioIds.length === 0) return [];
+  if (!Array.isArray(portfolioIds) || portfolioIds.length === 0) return [];
   const pool = await getPool();
-  const idList = portfolioIds.join(',');
-  const result = await pool.request()
-    .query(`SELECT t.*, s.ticker, s.name as security_name, s.currency as security_currency
+  const req = pool.request();
+  const params = portfolioIds.map((id, i) => {
+    req.input(`pid${i}`, sql.Int, id);
+    return `@pid${i}`;
+  });
+  const result = await req.query(
+    `SELECT t.*, s.ticker, s.name as security_name, s.currency as security_currency
             FROM trades t
             JOIN securities s ON t.security_id = s.id
-            WHERE t.portfolio_id IN (${idList})
-            ORDER BY t.traded_at DESC`);
+            WHERE t.portfolio_id IN (${params.join(',')})
+            ORDER BY t.traded_at DESC`
+  );
   return result.recordset;
 }
 

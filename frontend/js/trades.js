@@ -158,11 +158,12 @@ document.getElementById('trade-form').addEventListener('submit', async (e) => {
       fee,
     });
     e.target.reset();
+    const sec = selectedSecurity;
     selectedSecurity = null;
     document.getElementById('selected-security').classList.add('hidden');
     document.getElementById('selected-security').textContent = '';
     searchInput.value = '';
-    showAlert('trades-error', `Trade executed: ${type.toUpperCase()} ${quantity} x ${selectedSecurity?.ticker || 'security'}`, 'success');
+    showAlert('trades-error', `Trade executed: ${type.toUpperCase()} ${quantity} x ${sec?.ticker || 'security'}`, 'success');
     await loadTrades();
   } catch (err) {
     showAlert('trade-error', err.message);

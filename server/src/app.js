@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const rateLimit = require('express-rate-limit');
 const { getPool } = require('./db/connection');
 const errorMiddleware = require('./middleware/error.middleware');
 
@@ -18,18 +19,35 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
+// Rate limiters
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests, please try again later.' },
+});
+
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 300,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Too many requests, please try again later.' },
+});
+
 // Serve frontend static files
 app.use(express.static(path.join(__dirname, '../../../frontend')));
 
-app.use('/api/auth', authRoutes);
-app.use('/api/accounts', accountsRoutes);
-app.use('/api/portfolios', portfoliosRoutes);
-app.use('/api/trades', tradesRoutes);
-app.use('/api/dashboard', dashboardRoutes);
-app.use('/api/market', marketRoutes);
+app.use('/api/auth', authLimiter, authRoutes);
+app.use('/api/accounts', apiLimiter, accountsRoutes);
+app.use('/api/portfolios', apiLimiter, portfoliosRoutes);
+app.use('/api/trades', apiLimiter, tradesRoutes);
+app.use('/api/dashboard', apiLimiter, dashboardRoutes);
+app.use('/api/market', apiLimiter, marketRoutes);
 
 // SPA fallback - serve index.html for non-API routes
-app.get('*', (req, res) => {
+app.get('*', apiLimiter, (req, res) => {
   res.sendFile(path.join(__dirname, '../../../frontend/index.html'));
 });
 

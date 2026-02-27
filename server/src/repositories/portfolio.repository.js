@@ -1,11 +1,16 @@
 const { getPool, sql } = require('../db/connection');
 
 async function findByAccountIds(accountIds) {
-  if (!accountIds || accountIds.length === 0) return [];
+  if (!Array.isArray(accountIds) || accountIds.length === 0) return [];
   const pool = await getPool();
-  const idList = accountIds.join(',');
-  const result = await pool.request()
-    .query(`SELECT * FROM portfolios WHERE account_id IN (${idList}) ORDER BY created_at DESC`);
+  const req = pool.request();
+  const params = accountIds.map((id, i) => {
+    req.input(`aid${i}`, sql.Int, id);
+    return `@aid${i}`;
+  });
+  const result = await req.query(
+    `SELECT * FROM portfolios WHERE account_id IN (${params.join(',')}) ORDER BY created_at DESC`
+  );
   return result.recordset;
 }
 
