@@ -54,7 +54,7 @@ function renderTrades(trades) {
       <td><span class="badge ${t.type === 'buy' ? 'badge-success' : 'badge-danger'}">${t.type.toUpperCase()}</span></td>
       <td><strong>${escHtml(t.ticker)}</strong><br><small class="text-muted">${escHtml(t.security_name)}</small></td>
       <td class="text-right font-mono">${fmt(t.quantity, 4)}</td>
-      <td class="text-right font-mono">${fmt(t.total_price / t.quantity)}</td>
+      <td class="text-right font-mono">${t.quantity > 0 ? fmt(t.total_price / t.quantity) : '—'}</td>
       <td class="text-right font-mono">${fmt(t.total_price)}</td>
       <td class="text-right font-mono">${fmt(t.fee)}</td>
     </tr>
