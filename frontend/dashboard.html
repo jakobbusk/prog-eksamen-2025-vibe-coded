@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Portfolio Manager</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a class="navbar-brand" href="/dashboard.html">📈 Portfolio Manager</a>
+    <ul class="navbar-nav">
+      <li><a href="/dashboard.html" class="active">Dashboard</a></li>
+      <li><a href="/accounts.html">Accounts</a></li>
+      <li><a href="/portfolio.html">Portfolios</a></li>
+      <li><a href="/trades.html">Trades</a></li>
+    </ul>
+    <div class="navbar-actions">
+      <span class="text-muted" style="font-size:0.85rem">👤 <span id="nav-username"></span></span>
+      <button id="logout-btn" class="btn btn-ghost btn-sm">Logout</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header">
+      <h1>Dashboard</h1>
+      <p>Overview of your investment portfolio</p>
+    </div>
+
+    <div id="dashboard-loading" class="loading-overlay">
+      <div class="spinner"></div> Loading dashboard…
+    </div>
+
+    <div id="dashboard-content" class="hidden">
+      <!-- Stats -->
+      <div class="stats-grid">
+        <div class="stat-card primary">
+          <div class="stat-label">Cash Balance</div>
+          <div class="stat-value" id="total-balance">—</div>
+          <div class="stat-sub">Across all active accounts</div>
+        </div>
+        <div class="stat-card success">
+          <div class="stat-label">Portfolio Value</div>
+          <div class="stat-value" id="total-portfolio">—</div>
+          <div class="stat-sub">Market value of holdings</div>
+        </div>
+        <div class="stat-card warning">
+          <div class="stat-label">Net Worth</div>
+          <div class="stat-value" id="total-networth">—</div>
+          <div class="stat-sub">Cash + Portfolio value</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Accounts</div>
+          <div class="stat-value" id="active-accounts">—</div>
+          <div class="stat-sub">Active accounts</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Portfolios</div>
+          <div class="stat-value" id="total-portfolios">—</div>
+          <div class="stat-sub">Investment portfolios</div>
+        </div>
+      </div>
+
+      <!-- Charts and recent trades -->
+      <div class="grid grid-2" style="align-items:start">
+        <!-- Portfolio breakdown chart -->
+        <div class="card">
+          <div class="card-header">
+            <h2>Portfolio Breakdown</h2>
+          </div>
+          <div class="card-body">
+            <div class="chart-container">
+              <canvas id="portfolio-chart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent trades -->
+        <div class="card">
+          <div class="card-header">
+            <h2>Recent Trades</h2>
+            <a href="/trades.html" class="btn btn-sm btn-outline">View All</a>
+          </div>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Type</th>
+                  <th>Security</th>
+                  <th class="text-right">Qty</th>
+                  <th class="text-right">Total</th>
+                </tr>
+              </thead>
+              <tbody id="recent-trades-body">
+                <tr><td colspan="5" class="text-center text-muted" style="padding:24px">Loading…</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>

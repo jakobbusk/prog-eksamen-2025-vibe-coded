@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolios — Portfolio Manager</title>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
+<body>
+  <nav class="navbar">
+    <a class="navbar-brand" href="/dashboard.html">📈 Portfolio Manager</a>
+    <ul class="navbar-nav">
+      <li><a href="/dashboard.html">Dashboard</a></li>
+      <li><a href="/accounts.html">Accounts</a></li>
+      <li><a href="/portfolio.html" class="active">Portfolios</a></li>
+      <li><a href="/trades.html">Trades</a></li>
+    </ul>
+    <div class="navbar-actions">
+      <span class="text-muted" style="font-size:0.85rem">👤 <span id="nav-username"></span></span>
+      <button id="logout-btn" class="btn btn-ghost btn-sm">Logout</button>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header d-flex justify-between align-center">
+      <div>
+        <h1>Portfolios</h1>
+        <p>Manage and analyse your investment portfolios</p>
+      </div>
+      <button class="btn btn-primary" onclick="openModal('create-portfolio-modal')">+ New Portfolio</button>
+    </div>
+
+    <div id="portfolio-error"></div>
+
+    <div id="portfolios-grid" class="grid grid-3">
+      <div class="loading-overlay" style="grid-column:1/-1"><div class="spinner"></div> Loading…</div>
+    </div>
+  </div>
+
+  <!-- Create Portfolio Modal -->
+  <div class="modal-overlay" id="create-portfolio-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h2>New Portfolio</h2>
+        <button class="modal-close" onclick="closeModal('create-portfolio-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div id="create-portfolio-error"></div>
+        <form id="create-portfolio-form">
+          <div class="form-group">
+            <label for="portfolio-name">Portfolio Name *</label>
+            <input type="text" id="portfolio-name" placeholder="e.g. Growth Portfolio" required>
+          </div>
+          <div class="form-group">
+            <label for="portfolio-account">Account *</label>
+            <select id="portfolio-account" required>
+              <option value="">Loading accounts…</option>
+            </select>
+            <div class="form-hint">Portfolio trades will be charged to this account.</div>
+          </div>
+          <div class="modal-footer" style="padding:0;border:none;margin-top:8px">
+            <button type="button" class="btn btn-ghost" onclick="closeModal('create-portfolio-modal')">Cancel</button>
+            <button type="submit" class="btn btn-primary">Create Portfolio</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Portfolio Overview Modal -->
+  <div class="modal-overlay" id="overview-modal">
+    <div class="modal modal-lg">
+      <div class="modal-header">
+        <h2 id="overview-title">Portfolio Overview</h2>
+        <button class="modal-close" onclick="closeModal('overview-modal')">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="stats-grid mb-2" style="grid-template-columns:repeat(2,1fr)">
+          <div class="stat-card success">
+            <div class="stat-label">Market Value</div>
+            <div class="stat-value" id="overview-total">—</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Unrealized Gain/Loss</div>
+            <div class="stat-value" id="overview-gain">—</div>
+          </div>
+        </div>
+        <div class="chart-container mb-2">
+          <canvas id="holdings-chart"></canvas>
+        </div>
+        <div id="overview-body">
+          <div class="loading-overlay"><div class="spinner"></div> Loading positions…</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/portfolio.js"></script>
+</body>
+</html>
